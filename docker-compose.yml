@@ -1,0 +1,40 @@
+services:
+
+  postgresql:
+    container_name: money_transfer_app_pgsql
+    image: postgres
+    environment:
+      POSTGRES_USER: moneyTransfer
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: transferDB
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5445:5432"
+    networks:
+      - microservices-money-transfer
+    restart: unless-stopped
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+networks:
+  microservices-money-transfer:
+    driver: bridge
+
+
+
+volumes:
+  postgres:
+
