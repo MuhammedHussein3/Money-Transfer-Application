@@ -5,14 +5,14 @@ import com.transfer.account.account.dto.enums.Branch;
 import com.transfer.account.account.dto.enums.Country;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import static jakarta.persistence.EnumType.STRING;
 
@@ -34,8 +34,14 @@ public class Account {
     @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
+    @Column(name = "email_address", nullable = false, unique = true)
+    private String email;
+
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfrBirth;
 
     @Column(name = "country", nullable = false)
     @Enumerated(STRING)
@@ -44,7 +50,6 @@ public class Account {
     @Column(name = "account_type", nullable = false)
     @Enumerated(STRING)
     private AccountType accountType;
-
 
     @Column(name = "branch", nullable = false)
     @Enumerated(STRING)
@@ -67,7 +72,8 @@ public class Account {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Favorite> favorites;
 
 
 }
