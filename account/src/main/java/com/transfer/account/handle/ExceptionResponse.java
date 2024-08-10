@@ -14,7 +14,6 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ExceptionResponse {
 
-
     private String businessErrorDescription;
     private String error;
     private Map<String, String> errors;

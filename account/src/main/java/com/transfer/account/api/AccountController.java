@@ -4,8 +4,6 @@ import com.transfer.account.dto.request.AccountCreateRequest;
 import com.transfer.account.dto.request.AccountTransferMoneyRequest;
 import com.transfer.account.dto.response.AccountDetailsResponse;
 import com.transfer.account.dto.response.AccountResponse;
-import com.transfer.account.exceptions.AccountNotFoundException;
-import com.transfer.account.kafka.AccountTransactionConfirmation;
 import com.transfer.account.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +35,7 @@ public class AccountController {
                 );
     }
 
+
     @PostMapping("/transfer")
     public ResponseEntity<String> transferMoney(
             @Valid @RequestBody AccountTransferMoneyRequest request
@@ -45,12 +44,14 @@ public class AccountController {
          return ResponseEntity.ok("TransferOperation Successfully");
     }
 
+
     @GetMapping("/get/balance")
     public ResponseEntity<BigDecimal> getBalance(
             @RequestParam("account-number") String accountNumber
     ) {
        return ResponseEntity.ok(service.getBalance(accountNumber));
     }
+
 
     @GetMapping("/get-details")
     public ResponseEntity<AccountDetailsResponse> getAccountDetails(
