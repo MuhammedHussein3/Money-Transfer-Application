@@ -37,11 +37,12 @@ public class AccountController {
                 );
     }
 
-    @PostMapping
+    @PostMapping("/transfer")
     public ResponseEntity<String> transferMoney(
             @Valid @RequestBody AccountTransferMoneyRequest request
     ) {
-         return ResponseEntity
+         service.transferMoney(request);
+         return ResponseEntity.ok("TransferOperation Successfully");
     }
 
     @GetMapping("/get/balance")

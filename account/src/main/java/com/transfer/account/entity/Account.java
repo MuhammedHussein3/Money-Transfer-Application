@@ -71,6 +71,4 @@ public class Account {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Favorite> favorites;
-
-
 }

@@ -1,7 +1,6 @@
 package com.bank.transaction.repo
 
 import com.bank.transaction.dto.enums.TransactionType
-import com.bank.transaction.dto.request.TransactionCreateRequest
 import com.bank.transaction.entity.TransactionHistoryArchive
 import org.hibernate.validator.constraints.UUID
 import org.springframework.data.domain.Page

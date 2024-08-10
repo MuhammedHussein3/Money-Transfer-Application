@@ -7,6 +7,7 @@ import com.transfer.account.dto.response.AccountDetailsResponse;
 import com.transfer.account.dto.response.AccountResponse;
 import com.transfer.account.entity.Account;
 import com.transfer.account.exceptions.AccountNotFoundException;
+import com.transfer.account.exceptions.InsufficientBalanceException;
 import com.transfer.account.mapper.AccountMapper;
 import com.transfer.account.repo.AccountRepository;
 import com.transfer.account.service.AccountService;
@@ -73,29 +74,45 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void transferMoney(AccountTransferMoneyRequest request) {
 
-        var fromAccount = repository.findAccountByAccountNumber(request.fromAccountNumber())
-                .orElseThrow(() -> new AccountNotFoundException(String.format("Account not found with AccountNumber:: %s", request.fromAccountNumber())));
+        Account fromAccount = findAccountByNumber(request.fromAccountNumber(), "Account not found with AccountNumber: %s");
+        Account toAccount = findAccountByNumber(request.toAccountNumber(), "Recipient Account not found with AccountNumber: %s");
 
-        var toAccount = repository.findAccountByAccountNumber(request.toAccountNumber())
-                .orElseThrow(() -> new AccountNotFoundException(String.format("Recipient Account not found with AccountNumber:: %s", request.toAccountNumber())));
+        validateSufficientBalance(fromAccount, request.amount());
 
+        processTransfer(fromAccount, toAccount, request.amount());
 
-        fromAccount.setBalance(fromAccount.getBalance().subtract(request.amount()));
+        sendTransactionConfirmation(fromAccount, request);
+    }
+
+    private Account findAccountByNumber(String accountNumber, String errorMessage) {
+        return repository.findAccountByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(String.format(errorMessage, accountNumber)));
+    }
+
+    private void validateSufficientBalance(Account account, BigDecimal amount) {
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance for the transaction.");
+        }
+    }
+
+    private void processTransfer(Account fromAccount, Account toAccount, BigDecimal amount) {
+        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+        toAccount.setBalance(toAccount.getBalance().add(amount));
+
         repository.save(fromAccount);
-        toAccount.setBalance(fromAccount.getBalance().add(request.amount()));
         repository.save(toAccount);
+    }
 
+    private void sendTransactionConfirmation(Account fromAccount, AccountTransferMoneyRequest request) {
+        AccountTransactionConfirmation confirmation = AccountTransactionConfirmation.builder()
+                .accountNumberId(fromAccount.getAccountNumber())
+                .amount(request.amount())
+                .transactionType(request.transactionType())
+                .balanceAfterTransaction(fromAccount.getBalance())
+                .description("Transaction processed successfully")
+                .build();
 
-        AccountTransactionConfirmation accountTransactionConfirmation =
-                AccountTransactionConfirmation.builder()
-                        .accountNumberId(fromAccount.getAccountNumber())
-                        .amount(request.amount())
-                        .transactionType(request.transactionType())
-                        .balanceAfterTransaction(BigDecimal.valueOf(fromAccount.getBalance().longValue()))
-                        .description("Hello Kafka")
-                        .build();
-
-        accountTransactionProducer.sendAccountConfirmationToTransaction(accountTransactionConfirmation);
+        accountTransactionProducer.sendAccountConfirmationToTransaction(confirmation);
     }
 
     @Override
