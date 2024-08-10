@@ -41,3 +41,13 @@ account:
       EAST: "8012"
       NORTH: "4531"
       SOUTH: "9081"
+
+# Eureka
+eureka:
+  client:
+    serviceUrl.defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+server:
+  port: 8001

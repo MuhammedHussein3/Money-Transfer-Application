@@ -8,6 +8,6 @@ public record AccountNumberCreateRequest(
         String accountType,
 
         @NotBlank(message = "BranchCode must be required")
-        String branchCode
+        String branch
 ) {
 }
