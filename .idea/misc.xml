@@ -8,6 +8,15 @@
         <option value="$PROJECT_DIR$/account-number/pom.xml" />
         <option value="$PROJECT_DIR$/service-registry/pom.xml" />
         <option value="$PROJECT_DIR$/transaction/pom.xml" />
+        <option value="$PROJECT_DIR$/services/account/pom.xml" />
+        <option value="$PROJECT_DIR$/services/service-registry/pom.xml" />
+        <option value="$PROJECT_DIR$/services/account-number/pom.xml" />
+        <option value="$PROJECT_DIR$/services/transaction/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/registry-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/account-number-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/transaction-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/sub-account-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/account-service/pom.xml" />
       </list>
     </option>
   </component>

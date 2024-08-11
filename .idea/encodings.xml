@@ -3,7 +3,16 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/account-number/src/main/kotlin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/account/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bank-system-microservices/account-number-service/src/main/kotlin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bank-system-microservices/account-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bank-system-microservices/registry-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bank-system-microservices/sub-account-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bank-system-microservices/transaction-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/account-number/src/main/kotlin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/account/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/service-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/transaction/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/transaction/src/main/java" charset="UTF-8" />
   </component>
 </project>
