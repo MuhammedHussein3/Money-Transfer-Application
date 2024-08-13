@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5445/auth_db
+    username: moneyTransfer
+    password: 12345
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+      eclipselink:
+        logging:
+          level:
+            org:
+              hibernate:
+                SQL: debug
+                type:
+                  descriptor: trace
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+  application:
+   name: bank-auth-service
+
+application:
+  security:
+    jwt:
+      secret-key: 40DKJ2234HKJH34KJ2HKJ2UY23U4234U2Y34H2KJH5KH7K6H7K5KJ32H56KJH46KJ4H57H45K8JHLK45KJHEKHKJH6KJH54KJHTKEJHTKB4532
+      expiration: 18000000
+
+
+server:
+  port: 8005
