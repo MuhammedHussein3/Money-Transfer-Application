@@ -1,5 +1,6 @@
 package com.bank.subAccount.mapper;
 
+import com.bank.subAccount.dto.SubAccountDetailsResponse;
 import com.bank.subAccount.dto.SubAccountRequestDto;
 import com.bank.subAccount.dto.SubAccountResponse;
 import com.bank.subAccount.entity.SubAccount;
@@ -20,6 +21,15 @@ public class SubAccountMapper {
     public SubAccountResponse mapToSubAccountResponse(SubAccount subAccount) {
         return SubAccountResponse.builder()
                 .subAccountId(subAccount.getId())
+                .build();
+    }
+
+    public SubAccountDetailsResponse mapToSubAccountDetails(SubAccount subAccount) {
+        return SubAccountDetailsResponse
+                .builder()
+                .subAccountName(subAccount.getSubAccountName())
+                .subAccountType(subAccount.getSubAccountType())
+                .balance(subAccount.getBalance())
                 .build();
     }
 }

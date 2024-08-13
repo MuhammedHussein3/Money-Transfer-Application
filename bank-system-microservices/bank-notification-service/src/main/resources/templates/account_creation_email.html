@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Account Creation Notification</title>
+</head>
+<body>
+<h1>Welcome, <span th:text="${firstName} + ' ' + ${lastName}">User</span>!</h1>
+
+<p>Congratulations! Your new account has been created successfully.</p>
+
+<p>Account Type: <span th:text="${accountType}">Account Type</span></p>
+<p>Initial Balance: <span th:text="${balance}">Balance</span></p>
+
+<p>If you have any questions or need further assistance, feel free to contact us at any time.</p>
+
+<p>Thank you for choosing our bank!</p>
+
+<p>Best regards,<br/>Banque Misr</p>
+</body>
+</html>

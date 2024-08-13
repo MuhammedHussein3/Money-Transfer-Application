@@ -4,8 +4,8 @@ services:
     container_name: money_transfer_app_pgsql
     image: postgres
     environment:
-      POSTGRES_USER: $$$$$
-      POSTGRES_PASSWORD: $$$$$
+      POSTGRES_USER: $$
+      POSTGRES_PASSWORD: $$
       POSTGRES_DB: transferDB
       PGDATA: /data/postgres
     volumes:
@@ -29,9 +29,11 @@ services:
       - "22181:2181"
     networks:
       - microservices-money-transfer
+
+
   kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: $$$$$
+    container_name: mt_kafka
     ports:
       - "9092:9092"
     depends_on:
@@ -46,13 +48,66 @@ services:
     networks:
       - microservices-money-transfer
 
+
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
-    container_name: $$$$$
+    container_name: mt_kafdrop
     ports:
       - "9000:9000"
     environment:
       KAFKA_BROKERCONNECT: kafka:9092
+    networks:
+      - microservices-money-transfer
+
+
+  zipkin:
+    container_name: mt_zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - microservices-money-transfer
+
+
+  mail-dev:
+    container_name: mt-mail-dev
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+
+
+  redis:
+    image: redis:latest
+    container_name: mt_redis_cache
+    hostname: localhost
+    ports:
+      - "6370:6379"
+    networks:
+      - microservices-money-transfer
+    restart: unless-stopped
+
+
+  rabbitmq:
+    container_name: mt_rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservices-money-transfer
+
+
+  mongodb:
+    container_name: mt_mongodb
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
     networks:
       - microservices-money-transfer
 
@@ -65,4 +120,5 @@ networks:
 
 volumes:
   postgres:
+  mongo_data:
 

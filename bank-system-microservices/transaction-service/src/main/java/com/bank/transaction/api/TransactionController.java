@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/private/transactions")
+@RequestMapping("/transactions")
 @RequiredArgsConstructor
 @Validated
 @SecurityRequirement(name = "bearerAuth")

@@ -17,6 +17,9 @@
         <option value="$PROJECT_DIR$/bank-system-microservices/transaction-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank-system-microservices/sub-account-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank-system-microservices/account-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/bank-gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/bank-notification-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-system-microservices/bank-auth-service/pom.xml" />
       </list>
     </option>
   </component>

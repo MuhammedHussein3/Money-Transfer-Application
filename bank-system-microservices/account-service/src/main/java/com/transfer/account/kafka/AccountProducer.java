@@ -20,7 +20,7 @@ public class AccountProducer {
 
         Message<AccountTransactionConfirmation> message = MessageBuilder
                 .withPayload(accountTransactionConfirmation)
-                .setHeader(KafkaHeaders.TOPIC, "account-transaction-topic")
+                .setHeader(KafkaHeaders.TOPIC, "$$")
                 .build();
 
         kafkaTemplate.send(message);

@@ -6,6 +6,7 @@ import com.transfer.account.service.FavoriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/favorites")
 @RequiredArgsConstructor
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 @CrossOrigin()
 public class FavoriteController {
 

@@ -38,6 +38,18 @@ public class Account {
     @Column(name = "account_id", nullable = false)
     private Long id;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
     @Column(name = "country", nullable = false)
     @Enumerated(STRING)
     private Country country;

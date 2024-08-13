@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 
 @Builder
 public record AccountDetailsResponse (
+        String firstName,
+        String lastName,
+        String phone,
+        String email,
         String accountNumber,
         String country,
         String accountType,

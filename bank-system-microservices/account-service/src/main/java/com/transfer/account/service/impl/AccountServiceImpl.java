@@ -7,20 +7,27 @@ import com.transfer.account.dto.response.AccountDetailsResponse;
 import com.transfer.account.dto.response.AccountResponse;
 import com.transfer.account.entity.Account;
 import com.transfer.account.exceptions.AccountNotFoundException;
+import com.transfer.account.exceptions.EmailAlreadyExistsException;
 import com.transfer.account.exceptions.InsufficientBalanceException;
 import com.transfer.account.mapper.AccountMapper;
+import com.transfer.account.message.AccountCreateNotification;
+import com.transfer.account.message.MoneyTransferNotification;
+import com.transfer.account.rabbitmq.MainAccountProducer;
 import com.transfer.account.repo.AccountRepository;
 import com.transfer.account.service.AccountService;
 import com.transfer.account.clients.openfeign.AccountNumberFeignClient;
 import com.transfer.account.clients.restTemplate.accountNumber.AccountNumberClient;
 import com.transfer.account.kafka.AccountProducer;
 import com.transfer.account.kafka.AccountTransactionConfirmation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +37,8 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper mapper;
     private final AccountNumberClient accountNumberClient;
     private final AccountNumberFeignClient accountNumberFeignClient;
-    private final AccountProducer accountTransactionProducer;
-
+    private final AccountProducer accountTransactionKafkaProducer;
+    private final MainAccountProducer mainAccountRabbitMQProducer;
     @Override
     @Transactional(readOnly = true)
     public AccountDetailsResponse getAccountDetails(String accountNumber) {
@@ -59,9 +66,16 @@ public class AccountServiceImpl implements AccountService {
         String accountNumberGen = generateAccountNumber(createRequest);
         account.setAccountNumber(accountNumberGen);
 
-        Account savedAccount = repository.save(account);
-
-        return buildAccountResponse(savedAccount);
+        try {
+            Account savedAccount = repository.save(account);
+            mainAccountRabbitMQProducer.sendAccountCreationMessage(buildAccountCreateNotification(savedAccount));
+            return buildAccountResponse(savedAccount);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getCause() instanceof ConstraintViolationException) {
+                throw new EmailAlreadyExistsException("Email " + account.getEmail() + " already exists.");
+            }
+            throw e;
+        }
     }
 
     private Account mapToAccount(AccountCreateRequest createRequest) {
@@ -87,6 +101,19 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
+    private AccountCreateNotification buildAccountCreateNotification(
+            Account newAccount
+    ){
+        return AccountCreateNotification.builder()
+                .email(newAccount.getEmail())
+                .balance(newAccount.getBalance())
+                .phone(newAccount.getPhone())
+                .firstName(newAccount.getFirstName())
+                .lastName(newAccount.getLastName())
+                .accountType(newAccount.getAccountType().toString())
+                .build();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getBalance(String accountNumber) {
@@ -109,8 +136,14 @@ public class AccountServiceImpl implements AccountService {
         processTransfer(fromAccount, toAccount, request.amount());
 
         sendTransactionConfirmation(fromAccount, request);
+
+        sendMoneyTransferNotification(buildMoneyTransferNotification(fromAccount, toAccount, request.amount()));
     }
 
+
+    private void sendMoneyTransferNotification(MoneyTransferNotification moneyTransferNotification){
+        mainAccountRabbitMQProducer.sendMoneyTransferMessage(moneyTransferNotification);
+    }
     private Account findAccountByNumber(String accountNumber, String errorMessage) {
         return repository.findAccountByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException(String.format(errorMessage, accountNumber)));
@@ -139,7 +172,20 @@ public class AccountServiceImpl implements AccountService {
                 .description("Transaction processed successfully")
                 .build();
 
-        accountTransactionProducer.sendAccountConfirmationToTransaction(confirmation);
+        accountTransactionKafkaProducer.sendAccountConfirmationToTransaction(confirmation);
+    }
+
+    private MoneyTransferNotification buildMoneyTransferNotification(Account fromAccount, Account toAccount, BigDecimal amount){
+        return MoneyTransferNotification
+                .builder()
+                .email(fromAccount.getEmail())
+                .userId(fromAccount.getUserId())
+                .fromAccountNumberId(fromAccount.getAccountNumber())
+                .toAccountNumberId(toAccount.getAccountNumber())
+                .amount(amount)
+                .balanceAfterTransaction(fromAccount.getBalance())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
     @Override

@@ -27,20 +27,24 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
-      group-id: $$$$$
+      group-id: transaction_id
       auto-offset-reset: earliest
-      key-deserializer: $$$$$
-      value-deserializer: $$$$$
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-        spring.json.type.mapping: $$$$$
+        spring.json.type.mapping: accountTransactionConfirmation:com.bank.transaction.kafka.AccountTransactionConfirmation
 # Eureka
 eureka:
   client:
     serviceUrl.defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
-
+# Zipkin
+management:
+  tracing:
+    sampling:
+      probablity: 1.0
 springdoc:
   swagger-ui:
          path: /swagger-ui.html

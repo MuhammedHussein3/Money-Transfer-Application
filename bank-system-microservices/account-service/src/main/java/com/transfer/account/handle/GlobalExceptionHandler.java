@@ -1,15 +1,21 @@
 package com.transfer.account.handle;
 
 import com.transfer.account.exceptions.AccountNotFoundException;
+import com.transfer.account.exceptions.EmailAlreadyExistsException;
 import com.transfer.account.exceptions.InsufficientBalanceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestControllerAdvice
@@ -84,5 +90,29 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+
+        var errors = new HashMap<String, Object>();
+        e.getBindingResult().getAllErrors()
+                .forEach(error ->{
+                    var fieldName = ((FieldError)error).getField();
+                    var errorMessage = error.getDefaultMessage();
+                    errors.put(fieldName,errorMessage);
+
+                });
+        errors.put("status", String.valueOf(HttpStatus.BAD_REQUEST.value()));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(errors));
+    }
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("statusCode", HttpStatus.CONFLICT.toString());
+        errors.put("error", ex.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(errors), HttpStatus.CONFLICT);
     }
 }

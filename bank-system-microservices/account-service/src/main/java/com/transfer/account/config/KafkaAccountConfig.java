@@ -12,7 +12,7 @@ public class KafkaAccountConfig {
     @Bean
     public NewTopic accountTopic(){
         return TopicBuilder
-                .name("$$$$$")
+                .name("transaction-account-topic")
                 .build();
     }
 

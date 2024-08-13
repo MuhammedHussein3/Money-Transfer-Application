@@ -14,7 +14,7 @@ public class AccountTransactionConsumer {
 
     private final TransactionService service;
 
-    @KafkaListener(topics = "$$$$$")
+    @KafkaListener(topics = "$$",groupId = "transaction_id")
     public void consumeAccountTransaction(AccountTransactionConfirmation accountTransactionConfirmation){
         service.createTransaction(accountTransactionConfirmation);
     }

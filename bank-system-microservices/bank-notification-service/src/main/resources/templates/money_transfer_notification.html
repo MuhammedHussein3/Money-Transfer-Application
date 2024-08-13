@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Money Transfer Notification</title>
+</head>
+<body>
+<h1>Dear Customer,</h1>
+
+<p>We would like to inform you that a transfer of <strong><span th:text="${amount}">Amount</span></strong> has been successfully made from your account.</p>
+
+<p>Transaction Details:</p>
+<ul>
+    <li>From Account: <span th:text="${fromAccountId}">From Account</span></li>
+    <li>To Account: <span th:text="${toAccountId}">To Account</span></li>
+    <li>Amount Transferred: <span th:text="${amount}">Amount</span></li>
+    <li>Balance After Transaction: <span th:text="${balanceAfterTransaction}">Balance After Transaction</span></li>
+    <li>Transaction Date & Time: <span th:text="${timestamp}">Timestamp</span></li>
+</ul>
+
+<p>If you did not authorize this transaction, please contact our support team immediately.</p>
+
+<p>Thank you for banking with us.</p>
+
+<p>Best regards,<br/>Your Bank Name</p>
+</body>
+</html>

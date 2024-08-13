@@ -29,11 +29,16 @@ spring:
   kafka:
    producer:
      bootstrap-servers: localhost:9092
-     key-serializer: $$$$$
-     value-serializer: $$$$$
+     key-serializer: org.apache.kafka.common.serialization.StringSerializer
+     value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
      properties:
-       spring.json.type.mapping: $$$$$
+       spring.json.type.mapping: accountTransactionConfirmation:com.transfer.account.kafka.AccountTransactionConfirmation
 
+# Zipkin
+management:
+  tracing:
+    sampling:
+      probablity: 1.0
 
 application:
   config:
@@ -47,6 +52,8 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
-kafka:
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
 server:
   port: 8002

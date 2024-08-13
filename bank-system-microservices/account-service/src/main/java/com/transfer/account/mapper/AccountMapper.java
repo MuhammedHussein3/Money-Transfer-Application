@@ -15,6 +15,10 @@ public class AccountMapper {
     public Account mapToAccount(AccountCreateRequest createRequest) {
 
         return Account.builder()
+                .firstName(createRequest.firstName())
+                .lastName(createRequest.lastName())
+                .email(createRequest.email())
+                .phone(createRequest.phone())
                 .accountType(createRequest.accountType())
                 .branch(createRequest.branch())
                 .userId(createRequest.userId())
@@ -25,6 +29,10 @@ public class AccountMapper {
 
     public AccountDetailsResponse mapToAccountDetailsResponse(Account account) {
         return AccountDetailsResponse.builder()
+                .firstName(account.getFirstName())
+                .lastName(account.getLastName())
+                .email(account.getEmail())
+                .phone(account.getPhone())
                 .accountType(account.getAccountType().toString())
                 .accountNumber(account.getAccountNumber())
                 .createdAt(Instant.now())
