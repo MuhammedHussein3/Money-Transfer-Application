@@ -1,0 +1,43 @@
+spring:
+  # RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  application:
+    name: notification-service
+  # Mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: $$$$$
+    password: $$$$$
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: notification_db
+
+
+# Eureka
+eureka:
+  client:
+    serviceUrl.defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+
+# Zipkin
+management:
+  tracing:
+    sampling:
+      probablity: 1.0
+server:
+  port: 8040
