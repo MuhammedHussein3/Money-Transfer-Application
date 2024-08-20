@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -128,16 +129,24 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void transferMoney(AccountTransferMoneyRequest request) {
 
-        Account fromAccount = findAccountByNumber(request.fromAccountNumber(), "Account not found with AccountNumber: %s");
-        Account toAccount = findAccountByNumber(request.toAccountNumber(), "Recipient Account not found with AccountNumber: %s");
+        Account source = findAccountByNumber(request.fromAccountNumber(), "Account not found with AccountNumber: %s");
+        Account destination = findAccountByNumber(request.toAccountNumber(), "Recipient Account not found with AccountNumber: %s");
 
-        validateSufficientBalance(fromAccount, request.amount());
+        Account[] accounts = new Account[]{source, destination};
+        Arrays.sort(accounts, (first, second)-> first.getId().compareTo(second.getId()));
 
-        processTransfer(fromAccount, toAccount, request.amount());
+        synchronized (accounts[0]){
+            synchronized (accounts[1]){
+                validateSufficientBalance(source, request.amount());
 
-        sendTransactionConfirmation(fromAccount, request);
+                processTransfer(source, destination, request.amount());
 
-        sendMoneyTransferNotification(buildMoneyTransferNotification(fromAccount, toAccount, request.amount()));
+                sendTransactionConfirmation(source, request);
+
+                sendMoneyTransferNotification(buildMoneyTransferNotification(source, destination, request.amount()));
+            }
+        }
+
     }
 
 
